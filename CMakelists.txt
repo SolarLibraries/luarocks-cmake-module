@@ -38,6 +38,7 @@ endif(UNIX)
 
 if (MODULE_IS_DEV)
     add_definitions(-DMODULE_IS_DEV)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 endif()
 
 if(NOT LUA_INCLUDE_DIR OR (WIN32 AND NOT LUA_LIBRARIES))
@@ -45,7 +46,11 @@ if(NOT LUA_INCLUDE_DIR OR (WIN32 AND NOT LUA_LIBRARIES))
     find_package(Lua REQUIRED)
 endif()
 
-include_directories(${LUA_INCLUDE_DIR})
+if(NOT EXTERN_INCLUDE_DIR)
+    set(EXTERN_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/extern/include")
+endif()
+
+include_directories(${LUA_INCLUDE_DIR} ${EXTERN_INCLUDE_DIR})
 
 set(SOURCES
     src/mymodule.cpp

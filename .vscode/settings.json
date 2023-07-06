@@ -1,0 +1,7 @@
+{
+    "clangd.arguments": [
+        "--clang-tidy",
+        "--completion-style=detailed",
+        "--compile-commands-dir=build.luarocks",
+    ]
+}

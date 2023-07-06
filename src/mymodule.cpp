@@ -1,28 +1,29 @@
 #include <lua.hpp>
 
+#define SOL_ALL_SAFETIES_ON 1
+#include <sol/sol.hpp>
+
 #include <iostream>
 
 namespace mymodule
 {
-    int say_hello(lua_State *L)
+    void say_hello_to(std::string name)
     {
-        const char *name = luaL_checkstring(L, 1);
+        std::cout << "Hello, " << name << "!\n";
+    }
 
-        std::cout << "Hello, " << name << "!" << std::endl;
+    sol::table open_mymodule(sol::this_state L)
+    {
+        auto lua = sol::state_view(L);
+        sol::table module = lua.create_table();
 
-        return 0;
+        module["say_hello_to"] = say_hello_to;
+
+        return module;
     }
 }
 
-static const luaL_Reg mymodule_lib[] = {
-    { "say_hello", &mymodule::say_hello },
-    { nullptr, nullptr }
-};
-
-
 extern "C" int luaopen_mymodule(lua_State *L)
 {
-    luaL_newlib(L, mymodule_lib);
-
-    return 1;
+    return sol::stack::call_lua(L, 1, mymodule::open_mymodule);
 }
